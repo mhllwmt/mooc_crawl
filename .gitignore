@@ -2,5 +2,5 @@ venv
 .idea
 __pycache__
 geckodriver.log
-courses
-PDFs
+/data
+node_modules
