@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MOOC Spider Display</title>
+    <script src="./js/vue@2.6.0.js"></script>
+    <link rel="stylesheet" href="./css/element-ui.css">
+    <script src="./js/element-ui.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/common.js"></script>
+    <link rel="stylesheet" href="./css/common.css">
+</head>
+<body>
+    <el-row :gutter="20" id="single">
+
+        <el-col :span="10" :offset="5">
+            <el-input placeholder="请输入课程ID" v-model="course_id" ></el-input>
+        </el-col>
+        <el-button type="primary" @click="get_course" :disabled="course_id === ''">获取</el-button>
+    </el-row>
+    <script>
+        var single = new Vue({
+            el: '#single',
+            data: {
+                course_id: ''
+            },
+            methods: {
+                async get_course() {
+                    console.log(this.course_id)
+                    await get_course_by_id(this.course_id);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

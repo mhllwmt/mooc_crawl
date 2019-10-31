@@ -3,8 +3,10 @@ from MOOC.spiders.mooc_spider import Moocspider
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from multiprocessing import Process
+from flask_cors import *
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
 def run_spider(course):
     video = None
@@ -19,6 +21,10 @@ def spider(course):
     p.join()
     return f"Spider is crawling: {course}"
 
+@app.route("/test", methods=["GET"])
+def test():
+    return "hello world"
+
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8080, debug=True)
+    app.run(host="localhost", port=8081, debug=True)
