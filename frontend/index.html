@@ -1,38 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MOOC Spider Display</title>
     <script src="./js/vue@2.6.0.js"></script>
-    <link rel="stylesheet" href="./css/element-ui.css">
-    <script src="./js/element-ui.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="./js/axios.min.js"></script>
     <script src="./js/common.js"></script>
     <link rel="stylesheet" href="./css/common.css">
 </head>
-<body>
-    <el-row :gutter="20" id="single">
 
-        <el-col :span="10" :offset="5">
-            <el-input placeholder="请输入课程ID" v-model="course_id" ></el-input>
-        </el-col>
-        <el-button type="primary" @click="get_course" :disabled="course_id === ''">获取</el-button>
-    </el-row>
+<body>
+    <div id="single">
+        <el-container>
+            <el-header>
+                <el-row :gutter="12">
+                    <el-col :span="8" :offset="0">
+                        <el-input type="text" v-model="course_id">
+                    </el-col>
+                    <el-col :span="4" :offset="2">
+                        <el-button type="success" @click="get_course(this.course_id)">GET</el-button>
+                    </el-col>
+                </el-row>
+            </el-header>
+            <hr>
+            <el-main>
+                <el-collapse v-model="activeName" accordion>
+                    <el-collapse-item v-for="course in cs" :key="course.category">
+                        <template slot="title">
+                            <el-tag>{{ course.category }}</el-tag>
+                        </template>
+                        <el-row :gutter="12" v-for="c in course.courses" :key="c.id">
+                            <el-col :span="6" class="grid-content bg-purple">
+                                {{ c.name }}
+                            </el-col>
+                            <el-col :span="4" :offset="4" class="grid-content bg-purple">
+                                {{ c.id }}
+                            </el-col>
+                            <el-col :span="4" :offset="6">
+                                <el-button type="primary" round size="mini" @click="get_course(c.id)">获取</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-collapse-item>
+                </el-collapse>
+            </el-main>
+        </el-container>
+    </div>
     <script>
         var single = new Vue({
             el: '#single',
             data: {
-                course_id: ''
+                course_id: '',
+                cs: courses,
+                activeName: 1,
             },
             methods: {
-                async get_course() {
-                    console.log(this.course_id)
-                    await get_course_by_id(this.course_id);
-                }
-            }
+                async get_course(id) {
+                    console.log(id)
+                    await get_course_by_id(id);
+                },
+            },
         });
     </script>
 </body>
+
 </html>

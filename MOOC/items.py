@@ -18,3 +18,9 @@ class MoocItem(scrapy.Item):
 
 class MlItem(scrapy.Item):
     course = scrapy.Field()
+
+
+class TsItem(scrapy.Item):
+    file_urls = scrapy.Field()
+    file_name = scrapy.Field()
+    file = scrapy.Field()

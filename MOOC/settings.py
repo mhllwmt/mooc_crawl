@@ -88,32 +88,25 @@ NEWSPIDER_MODULE = 'MOOC.spiders'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 DOWNLOAD_DELAY = 0
-CONCURRENT_REQUESTS = 200
-CONCURRENT_REQUESTS_PER_DOMAIN = 200
-CONCURRENT_REQUESTS_PER_IP = 200
+CONCURRENT_REQUESTS = 400
+CONCURRENT_REQUESTS_PER_DOMAIN = 400
+CONCURRENT_REQUESTS_PER_IP = 400
 COOKIES_ENABLED = False
 # 时间限制
 DOWNLOAD_TIMEOUT = 5000
-# AJAXCRAWL_ENABLED = True
+AJAXCRAWL_ENABLED = True
 # 重定向
 # REDIRECT_ENABLED = False
 # 禁止重试
 # RETRY_ENABLED = False
 # 日志
 # LOG_LEVEL = 'INFO'
-# REACTOR_THREADPOOL_MAXSIZE = 20
+REACTOR_THREADPOOL_MAXSIZE = 100
 ITEM_PIPELINES = {
     # 'scrapy.pipelines.files.FilesPipeline':1
     'MOOC.pipelines.MoocPipeline':10,
+    'MOOC.pipelines.TsPipeline':50,
     'MOOC.pipelines.MlPipeline':100
 }
+# FILES_STORE = '/home/lt/data'
 FILES_STORE = './data'
-
-import os
-
-mongo_host = os.getenv("DB_HOST")
-mongo_port = int(os.getenv("DB_PORT"))
-mongo_db_name = os.getenv("DB_NAME")
-mongo_db_collection = os.getenv("DB_COLLECTION")
-
-

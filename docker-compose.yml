@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+    spider:
+        build: .
+        restart: always
+        networks: 
+            mooc_net:
+                aliases:
+                    - spider
+        hostname: spider
+        ports:
+            - "8081:8081"
+    web:
+        build: frontend/
+        ports:
+            - "5000:80"
+        networks: 
+            - mooc_net
+            
+networks:
+    mooc_net:

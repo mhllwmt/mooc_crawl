@@ -11,7 +11,7 @@ CORS(app, supports_credentials=True)
 def run_spider(course):
     video = None
     process = CrawlerProcess(get_project_settings())
-    process.crawl(Moocspider, urls=course, video=video)
+    process.crawl(Moocspider, urls=[course], video=0)
     process.start()
 
 @app.route("/course/<course>", methods=['GET'])
@@ -21,10 +21,10 @@ def spider(course):
     p.join()
     return f"Spider is crawling: {course}"
 
-@app.route("/test", methods=["GET"])
+@app.route("/course", methods=["GET"])
 def test():
-    return "hello world"
+    return {'a': 1, 'b': 2, 'b': '3'}
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8081, debug=True)
+    app.run(host="localhost", port=8081, debug=True) 
