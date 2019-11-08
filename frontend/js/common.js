@@ -1,4 +1,4 @@
-const SPIDER_HOST = 'spider';
+const SPIDER_HOST = '106.13.90.235';
 const SPIDER_PORT = 8081;
 const SPIDER_PREFIX_COURSE = '/course';
 

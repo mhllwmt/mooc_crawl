@@ -7,7 +7,6 @@ services:
             mooc_net:
                 aliases:
                     - spider
-        hostname: spider
         ports:
             - "8081:8081"
     web:
@@ -16,6 +15,8 @@ services:
             - "5000:80"
         networks: 
             - mooc_net
+        depends_on:
+            - spider
             
 networks:
     mooc_net:
