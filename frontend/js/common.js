@@ -1,5 +1,5 @@
 const SPIDER_HOST = '106.13.90.235';
-const SPIDER_PORT = 8094;
+const SPIDER_PORT = 8095;
 const SPIDER_PREFIX_COURSE = '/course';
 
 var request_course_head = (id) => {
