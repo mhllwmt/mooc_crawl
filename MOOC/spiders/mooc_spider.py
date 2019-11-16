@@ -1,10 +1,13 @@
-import scrapy
-from MOOC.items import MoocItem
-from MOOC.items import MlItem
-from MOOC.items import TsItem
 import copy
-import re
 import json
+import os
+import re
+
+import scrapy
+
+from MOOC.items import MlItem
+from MOOC.items import MoocItem
+from MOOC.items import TsItem
 
 with open('test.txt', 'r', encoding='utf') as f:
     cookie = f.read()
@@ -36,7 +39,7 @@ class Moocspider(scrapy.Spider):
         'bizType': '1',
         'contentType': '1'
     }
-    _url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=9004189fcca8455a822232dfc9b857aa'
+    _url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=f5bca95f91044895af65fa6fb6c82035'
     data1 = {
         'callCount': '1',
         'scriptSessionId': '${scriptSessionId}190',
@@ -70,11 +73,12 @@ class Moocspider(scrapy.Spider):
 
     def start_requests(self):  # 开始遍历所有课程
         for url in self.course:
-            yield scrapy.Request(self.start_url.format(url), headers=self.HEAD, meta={'id':url}, callback=self.parse_basic)
+            yield scrapy.Request(self.start_url.format(url), headers=self.HEAD, meta={'id': url},
+                                 callback=self.parse_basic)
 
     def parse_basic(self, response):  # 获取课程基本信息
         content = response.xpath("//meta[@name= 'description']/@content").extract()[0].split(',')
-        mt = {'name': content[1], 'school': content[2], "id":response.meta['id']}
+        mt = {'name': content[1], 'school': content[2], "id": response.meta['id']}
         id = response.selector.re(r'id:(\d+),')[0]
         post_url = 'https://www.icourse163.org/dwr/call/plaincall/CourseBean.getLastLearnedMocTermDto.dwr'
         self.data1['c0-param0'] = 'number:' + id
@@ -93,12 +97,13 @@ class Moocspider(scrapy.Spider):
         dc['name'], dc['shool'], dc['ml']['len'], dc['ml']['chapter'] = response.meta['name'], response.meta['school'], \
                                                                         len(chapters), dict()
         for i, chapter in enumerate(chapters):
+            # if i==1:   break
+            # Hi 这是我最后改动的地方~~~再见^^ m't
             chapter_id, chapter_name = chapter[0], chapter[1]
             lessons = re.findall(re.compile(lesson_pattern.format(chapter_id)), s)
             dc1 = dict()
             dc1['name'], dc1['len'], dc1['lesson'] = chapter_name, len(lessons), dict()
             for j, lesson in enumerate(lessons):
-                # if j==1: break
                 # @目的 debug第5.3节课
                 lesson_id, lesson_name = lesson[0], lesson[1]
                 videos = re.findall(re.compile(video_pattern.format(lesson_id)), s)
@@ -136,7 +141,8 @@ class Moocspider(scrapy.Spider):
             # break
         item = MlItem()
         item['course'] = dc
-        yield scrapy.Request(self.info_url.format(response.meta['id']), meta={'item':item},headers=self.HEAD, callback=self.parse_info)
+        yield scrapy.Request(self.info_url.format(response.meta['id']), meta={'item': item}, headers=self.HEAD,
+                             callback=self.parse_info)
 
     def parse_info(self, response):
         dc = dict()
@@ -146,8 +152,8 @@ class Moocspider(scrapy.Spider):
         dt1 = response.xpath("//div[@class='category-title f-f0']").xpath('string(.)')
         dt2 = response.xpath("//div[@class='category-content j-cover-overflow']").xpath('string(.)')
         for i in range(len(dt1)):
-            name = dt1[i].extract().strip('\n').replace('\xa0',' ')
-            txt = dt2[i].extract().strip('\n').replace('\xa0',' ')
+            name = dt1[i].extract().strip('\n').replace('\xa0', ' ')
+            txt = dt2[i].extract().strip('\n').replace('\xa0', ' ')
             if len(txt):
                 dc[name] = txt
         tr = ['lectorPhoto', 'lectorName ', 'lectorTitle ']
@@ -157,15 +163,14 @@ class Moocspider(scrapy.Spider):
             ans = re.findall(re.compile(pattern.format(it)), response.text)
             if not len(teachers):
                 for x in ans:
-                    tmp = {it:x}
+                    tmp = {it: x}
                     teachers.append(tmp)
             else:
                 for i, x in enumerate(ans):
-                    teachers[i][it]=x
+                    teachers[i][it] = x
         dc['teachers'] = teachers
         item['course'].update(dc)
         yield item
-
 
     def parse(self, response):  # 根据资源id获取资源link
         item = MoocItem()
@@ -195,12 +200,16 @@ class Moocspider(scrapy.Spider):
             yield srtitem
 
             item['file_urls'] = []
-            if self.video != None:
-                if dc[self.video] == '':
+            if self.video != None :
+                if dc[self.video] == '' :
+                    # True 默认所有的视频文件全部以ts格式爬取
+                    # 这样貌似不行哎
                     self.data['bizId'] = response.meta['id']
                     name = response.meta['name']
-                    yield scrapy.FormRequest(self._url, headers=self.head, formdata=self.data,
+                    yield scrapy.FormRequest(self._url, method='POST', headers=self.head, formdata=self.data,
                                              meta={'name': name}, callback=self.parse_video, dont_filter=True)
+                    # response = requests.post(self._url, headers=self.head, data=self.data)
+                    # input(response.json())
                     return
                 else:
                     item['file_urls'].append(dc[self.video])
@@ -237,15 +246,18 @@ class Moocspider(scrapy.Spider):
                 urls.append(it)
                 txt[i] = name[-1] + '{}.ts'.format(str(num))
                 num += 1
-        with open('../data/{}/{}/{}/{}.m3u8'.format(*name),'w', encoding='utf') as f:
-            f.write("\n".join(txt))
         ts_url = url[:pos1 + 1] + '{}' + url[pos2:]
         item = TsItem()
         for i, it in enumerate(urls):
             item['file_urls'] = [ts_url.format(it)]
             tmp = copy.copy(name)
-            tmp[-1] = name[-1]+str(i)
+            tmp[-1] = name[-1] + str(i)
             item['file_name'] = tmp
             yield item
+        ml = '../data/{}/{}/{}'.format(name[0], name[1], name[2])
+        if not os.path.exists(ml):
+            os.makedirs(ml)
+        with open('../data/{}/{}/{}/{}.m3u8'.format(*name), 'w', encoding='utf') as f:
+            f.write("\n".join(txt))
 
 #   ffmpeg -i hello.m3u8 -vcodec copy -acodec copy media.mp4

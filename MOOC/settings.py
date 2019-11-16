@@ -87,26 +87,27 @@ NEWSPIDER_MODULE = 'MOOC.spiders'
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-DOWNLOAD_DELAY = 0
-CONCURRENT_REQUESTS = 400
-CONCURRENT_REQUESTS_PER_DOMAIN = 400
-CONCURRENT_REQUESTS_PER_IP = 400
+# DOWNLOAD_DELAY = 0
+CONCURRENT_REQUESTS = 300
+CONCURRENT_REQUESTS_PER_DOMAIN = 300
+CONCURRENT_REQUESTS_PER_IP = 300
 COOKIES_ENABLED = False
 # 时间限制
-DOWNLOAD_TIMEOUT = 5000
+DOWNLOAD_TIMEOUT = 233
 AJAXCRAWL_ENABLED = True
+RETRY_TIMES = 3
 # 重定向
-# REDIRECT_ENABLED = False
+REDIRECT_ENABLED = False
 # 禁止重试
-# RETRY_ENABLED = False
+RETRY_ENABLED = False
 # 日志
 # LOG_LEVEL = 'INFO'
-REACTOR_THREADPOOL_MAXSIZE = 100
+# REACTOR_THREADPOOL_MAXSIZE = 30
 ITEM_PIPELINES = {
     # 'scrapy.pipelines.files.FilesPipeline':1
-    'MOOC.pipelines.MoocPipeline':10,
-    'MOOC.pipelines.TsPipeline':50,
+    'MOOC.pipelines.MoocPipeline':50,
+    'MOOC.pipelines.TsPipeline':10,
     'MOOC.pipelines.MlPipeline':100
 }
 # FILES_STORE = '/home/lt/data'
-FILES_STORE = './data'
+FILES_STORE = '../data'

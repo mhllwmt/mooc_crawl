@@ -21,8 +21,9 @@ data = {
     'contentType': '1'
 }
 
-url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=9004189fcca8455a822232dfc9b857aa'
+url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=f5bca95f91044895af65fa6fb6c82035'
 response = requests.post(url, headers=head, data=data)
+input(response.json())
 x = response.json()
 signature = x['result']['videoSignDto']['signature']
 videoId = x['result']['videoSignDto']['videoId']

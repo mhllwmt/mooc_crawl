@@ -5,14 +5,15 @@ from scrapy.utils.project import get_project_settings
 from multiprocessing import Process
 from flask_cors import *
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend')
 CORS(app, supports_credentials=True)
 
+
 def run_spider(course):
-    video = None
     process = CrawlerProcess(get_project_settings())
     process.crawl(Moocspider, urls=[course], video=0)
     process.start()
+
 
 @app.route("/course/<course>", methods=['GET'])
 def spider(course):
@@ -20,10 +21,6 @@ def spider(course):
     p.start()
     p.join()
     return f"Spider is crawling: {course}"
-
-@app.route("/course", methods=["GET"])
-def test():
-    return {'a': 1, 'b': 2, 'b': '3'}
 
 
 if __name__ == "__main__":
