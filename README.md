@@ -1,5 +1,6 @@
 # mooc_crawler
 An implementation of BIT-IR final project crawler part
+中国大学MOOC 基于scrapy 的多线程爬虫
 
 ## Getting Started
 ```shell script
