@@ -9,7 +9,7 @@ from MOOC.items import MlItem
 from MOOC.items import MoocItem
 from MOOC.items import TsItem
 
-with open('test.txt', 'r', encoding='utf') as f:
+with open('cookies.txt', 'r', encoding='utf') as f:
     cookie = f.read()
 
 
@@ -39,7 +39,7 @@ class Moocspider(scrapy.Spider):
         'bizType': '1',
         'contentType': '1'
     }
-    _url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=f5bca95f91044895af65fa6fb6c82035'
+    _url = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=3407c3478e2847069f54e8716ef0326a'
     data1 = {
         'callCount': '1',
         'scriptSessionId': '${scriptSessionId}190',
@@ -121,6 +121,8 @@ class Moocspider(scrapy.Spider):
                                              meta={'type': '1', 'id': key['id'], 'name': name}, callback=self.parse,
                                              dont_filter=True)
                     dc2['video'][k + 1] = key
+
+
                 pdfs = re.findall(re.compile(pdf_pattern.format(lesson_id)), s)
                 dc2['pdf_len'], dc2['pdf'] = len(pdfs), dict()
                 for k, pdf in enumerate(pdfs):

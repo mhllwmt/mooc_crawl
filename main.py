@@ -27,7 +27,7 @@ class Craw(object):
 
 if __name__ == '__main__':
     # USTB-299003,ZJU-93001,PKU-1003479006，BIT-268001
-    urls = ['ZJU-93001', 'BIT-268001']
+    urls = ['BIT-268001']
     # urls = input("输入课程资源id: ").split(',')
     # print(urls)
     mt = Craw()
